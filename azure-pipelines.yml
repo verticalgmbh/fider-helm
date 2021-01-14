@@ -1,0 +1,41 @@
+trigger:
+  branches:
+    include:
+    - master
+
+pr:
+  branches:
+    include:
+    - master
+
+resources:
+- repo: self
+
+variables:
+  tag: '$(Build.BuildId)'
+
+queue:
+  name: 'kubernetes-vsts-agents'
+
+steps:
+  - script: helm lint
+    displayName: Lint the helm chart
+  - task: HelmDeploy@0
+    displayName: 'helm dry run'
+    inputs:
+      connectionType: 'Kubernetes Service Connection'
+      kubernetesServiceConnection: 'K8s Cluster-01'
+      namespace: 'fider-development-uservoice'
+      command: install
+      chartType: FilePath
+      chartPath: '$(System.DefaultWorkingDirectory)/.'
+      releaseName: 'fider-development-uservoice-dry-run'      
+      valueFile: '$(System.DefaultWorkingDirectory)/values.yaml'
+      force: true
+      arguments: '--dry-run --debug'
+  - task: PublishBuildArtifacts@1
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    displayName: Make helm chart available for release
+    inputs:
+      pathtoPublish: '$(System.DefaultWorkingDirectory)'
+      artifactName: FiderHelmChart
