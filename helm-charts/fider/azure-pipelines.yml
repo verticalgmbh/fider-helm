@@ -18,7 +18,7 @@ queue:
   name: 'kubernetes-vsts-agents'
 
 steps:
-  - script: helm lint
+  - script: helm lint helm-charts/fider/.
     displayName: Lint the helm chart
   - task: HelmDeploy@0
     displayName: 'helm dry run'
