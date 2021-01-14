@@ -28,9 +28,9 @@ steps:
       namespace: 'fider-development-uservoice'
       command: install
       chartType: FilePath
-      chartPath: '$(System.DefaultWorkingDirectory)/.'
+      chartPath: '$(System.DefaultWorkingDirectory)/helm-charts/fider/.'
       releaseName: 'fider-development-uservoice-dry-run'      
-      valueFile: '$(System.DefaultWorkingDirectory)/values.yaml'
+      valueFile: '$(System.DefaultWorkingDirectory)/helm-charts/fider/values.yaml'
       force: true
       arguments: '--dry-run --debug'
   - task: PublishBuildArtifacts@1
